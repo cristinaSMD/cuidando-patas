@@ -21,6 +21,7 @@ import java.util.UUID;
 
 @RestController
 @RequestMapping("/api/v1/users")
+@CrossOrigin(origins = "http://localhost:4200") // Esto permite solicitudes solo a este controlador
 public class UserController {
 
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
@@ -30,7 +31,6 @@ public class UserController {
 
     @Autowired
     UserMapper userMapper;
-
 
     public UserController(UserAccessServiceAdapter userAccessServiceAdapter) {
         this.userAccessServiceAdapter = userAccessServiceAdapter;
@@ -48,11 +48,11 @@ public class UserController {
     )
     @PostMapping("/loginProcess")
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        logger.info("Received login request with username: {}", loginRequest.getUsername());
+        logger.info("Received login request with username: {}", loginRequest);
 
         if (userAccessServiceAdapter.shouldUserAccess(loginRequest.getUsername(), loginRequest.getPassword())) {
             return ResponseEntity.status(HttpStatus.OK)
-                    .header("HX-Redirect", "/userDiary.html")
+                    .header("Access-Control-Allow-Origin", "http://localhost:4200")
                     .build();
         } else {
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("<div class='alert alert-danger'>Invalid username or password</div>");

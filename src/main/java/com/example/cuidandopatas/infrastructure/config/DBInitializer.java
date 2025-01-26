@@ -1,35 +1,30 @@
 package com.example.cuidandopatas.infrastructure.config;
 
-import com.example.cuidandopatas.domain.entity.Lesson;
-import com.example.cuidandopatas.domain.entity.Step;
+import com.example.cuidandopatas.domain.entity.Pet;
 import com.example.cuidandopatas.domain.entity.User;
-import com.example.cuidandopatas.domain.enums.DanceEnum;
-import com.example.cuidandopatas.domain.repository.LessonRepository;
-import com.example.cuidandopatas.domain.repository.StepRepository;
+import com.example.cuidandopatas.domain.entity.Visit;
+import com.example.cuidandopatas.domain.repository.PetRepository;
+import com.example.cuidandopatas.domain.repository.VisitRepository;
 import com.example.cuidandopatas.domain.repository.UserRepository;
 import jakarta.annotation.PostConstruct;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.LocalDateTime;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Set;
-import java.util.UUID;
+import java.time.LocalDate;
 
 @Component
 public class DBInitializer {
 
     private final UserRepository userRepository;
-    private final LessonRepository lessonRepository;
-    private final StepRepository stepRepository;
+    private final PetRepository petRepository;
+    private final VisitRepository visitRepository;
 
     @Autowired
-    public DBInitializer(UserRepository userRepository, LessonRepository lessonRepository, StepRepository stepRepository) {
+    public DBInitializer(UserRepository userRepository, PetRepository petRepository, VisitRepository visitRepository) {
         this.userRepository = userRepository;
-        this.lessonRepository = lessonRepository;
-        this.stepRepository = stepRepository;
+        this.petRepository = petRepository;
+        this.visitRepository = visitRepository;
     }
 
     @PostConstruct
@@ -53,22 +48,26 @@ public class DBInitializer {
         user2.setEmail("test2@gmail.com");
         userRepository.save(user2);
 
-        Step step1 = new Step();
-        step1.setLeader(Arrays.asList("da un paso atras","", "recuerda que en el tercer tiempo hay un impulso hacia abajo","","","Suelta a tu pareja en la dirección que quieres que salga"));
-        step1.setFollower(Arrays.asList("","","en el tercer tiempo impulsate desde abajo", "salta con las rodillas en el pecho","","aterriza con ambos pies en horizontal doblando las rodillas"));
-        stepRepository.save(step1);
+        // Crear pets
+        Pet pet1 = new Pet();
+        pet1.setName("Pet 1");
+        pet1.setBreed("Breed 1");
+        pet1.setType("Type 1");
+        pet1.setUser(user1);
+        pet1.setChip(12345);
+        pet1.setDateBirth(LocalDate.now().minusYears(3));
+        petRepository.save(pet1);
 
-        // Crear lecciones
-        Lesson lesson1 = new Lesson();
-        lesson1.setTitle("Swing out");
-        lesson1.setUsers(Set.of(user1, user2)); // Asigna usuarios a la lección
-        lesson1.setDescription("Swing out con salto");
-        lesson1.setSteps(Collections.singletonList(step1));
-        lesson1.setTags(Arrays.asList("swing out", "jumping", "partner"));
-        lesson1.setUsers(Set.of(user1, user2));
-        lesson1.setDanceName(DanceEnum.LINDY_HOP);
-        lesson1.setUrlVideo("VIDEO LINK");
-        lessonRepository.save(lesson1);
+        // Crear Visits
+        Visit visit1 = new Visit();
+        visit1.setPet(pet1);
+        visit1.setDescription("Visit 1");
+        visit1.setDateVisit(LocalDate.now().minusDays(1));
+        visit1.setFileURL("https://www.google.com/");
+        visitRepository.save(visit1);
+
+
+
 
 
         System.out.println("Base de datos inicializada con datos de prueba");

@@ -1,10 +1,10 @@
 package com.example.cuidandopatas.domain.entity;
 
-import java.time.LocalDateTime;
-import java.util.UUID;
-
 import jakarta.persistence.*;
 import lombok.Data;
+
+import java.time.LocalDateTime;
+import java.util.UUID;
 
 @Data
 @Entity

@@ -9,5 +9,6 @@ import java.util.UUID;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, UUID> {
+    @Query("SELECT u FROM User u WHERE u.username =:username and u.password =:password")
     User findByUsernameAndPassword(String username, String password);
 }

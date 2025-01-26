@@ -7,6 +7,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class UserMapper {
+
     public User toDomain(UserRequest createRequest) {
         User user = new User();
         user.setUsername(createRequest.getUsername());
