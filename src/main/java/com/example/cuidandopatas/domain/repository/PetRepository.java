@@ -14,4 +14,5 @@ public interface PetRepository extends JpaRepository<Pet, UUID> {
 
     @Query("SELECT l FROM Pet l JOIN l.user u WHERE u.id = :userId")
     List<Pet> findByUserId(@Param("USER_ID") UUID userId);
+
 }

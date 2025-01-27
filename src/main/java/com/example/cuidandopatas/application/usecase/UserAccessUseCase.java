@@ -13,9 +13,8 @@ public class UserAccessUseCase implements UserAccessServiceAdapter {
     UserRepository userRepository;
 
     @Override
-    public Boolean shouldUserAccess(String username, String password) {
-        User user = userRepository.findByUsernameAndPassword(username, password);
-        return user != null;
+    public User shouldUserAccess(String username, String password) {
+        return userRepository.findByUsernameAndPassword(username, password);
     }
 
     @Override

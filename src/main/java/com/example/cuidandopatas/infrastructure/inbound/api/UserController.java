@@ -9,6 +9,7 @@ import com.example.cuidandopatas.infrastructure.inbound.mapper.UserMapper;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
+import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -47,11 +48,17 @@ public class UserController {
             }
     )
     @PostMapping("/loginProcess")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest) {
-        logger.info("Received login request with username: {}", loginRequest);
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+        logger.info("Received login request with username: {}", loginRequest.getUsername());
+        User user = userAccessServiceAdapter.shouldUserAccess(loginRequest.getUsername(), loginRequest.getPassword());
+        logger.info("User: {}", user);
 
-        if (userAccessServiceAdapter.shouldUserAccess(loginRequest.getUsername(), loginRequest.getPassword())) {
+        if (null != user) {
+            session.setAttribute("username", user.getUsername());
+            session.setAttribute("usid", user.getId());
+
             return ResponseEntity.status(HttpStatus.OK)
+                    //.header("HX-Redirect", "/userDiary")
                     .header("Access-Control-Allow-Origin", "http://localhost:4200")
                     .build();
         } else {
