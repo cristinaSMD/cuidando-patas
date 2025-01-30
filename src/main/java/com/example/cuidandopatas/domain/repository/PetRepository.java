@@ -13,6 +13,6 @@ import java.util.UUID;
 public interface PetRepository extends JpaRepository<Pet, UUID> {
 
     @Query("SELECT l FROM Pet l JOIN l.user u WHERE u.id = :userId")
-    List<Pet> findByUserId(@Param("USER_ID") UUID userId);
+    List<Pet> findByUserId(@Param("userId") UUID userId);
 
 }

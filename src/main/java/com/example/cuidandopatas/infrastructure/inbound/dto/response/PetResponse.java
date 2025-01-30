@@ -1,7 +1,6 @@
 package com.example.cuidandopatas.infrastructure.inbound.dto.response;
 
 import com.example.cuidandopatas.domain.entity.User;
-import jakarta.persistence.Column;
 import lombok.Data;
 
 import java.time.LocalDate;
@@ -18,5 +17,6 @@ public class PetResponse {
     private Integer chip;
     private String ownerName;
     private LocalDate dateBirth;
+    private String imageFilename;
     private LocalDateTime updatedAt;
 }

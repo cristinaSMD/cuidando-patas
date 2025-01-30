@@ -3,11 +3,9 @@ package com.example.cuidandopatas.infrastructure.inbound.api;
 import com.example.cuidandopatas.application.PetServiceAdapter;
 import com.example.cuidandopatas.infrastructure.inbound.dto.request.PetRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.response.PetResponse;
-import com.example.cuidandopatas.infrastructure.inbound.mapper.PetMapper;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpSession;
-import jakarta.websocket.server.PathParam;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.thymeleaf.util.StringUtils;
 
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.UUID;
@@ -46,16 +43,17 @@ public class PetController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    @GetMapping("/create")
-    public ResponseEntity<List<PetResponse>> findPetsById(HttpSession session) {
+    @GetMapping("/get")
+    public ResponseEntity<List<PetResponse>> findPetsById(UUID userID) {
 
-        logger.info("Received create request with id: {}", session.getAttribute("usid"));
-
-        if (StringUtils.isEmpty(session.getAttribute("usid").toString())) {
+        logger.info("Received find request with id: {}", userID);
+        /*logger.info("Received find request with id: {}", session.getAttribute("usid"));
+        Comentado hasta que controlemos sesions bien
+        if (StringUtils.isEmpty(userID.toString())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
         }
-
-        List<PetResponse> pets = petServiceAdapter.findAllByUserId(UUID.fromString(session.getAttribute("usid").toString()));
+        */
+        List<PetResponse> pets = petServiceAdapter.findAllByUserId(userID);
 
         if (pets.isEmpty()) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(Collections.emptyList());
@@ -75,7 +73,7 @@ public class PetController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    @GetMapping("/getPetsByUserId")
+    @GetMapping("/create")
     public ResponseEntity<PetResponse> createPet(@RequestBody PetRequest petRequest, HttpSession session) {
         logger.info("Received create request with id: {}", session.getAttribute("usid"));
 

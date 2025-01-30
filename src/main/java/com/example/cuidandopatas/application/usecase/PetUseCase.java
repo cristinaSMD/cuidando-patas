@@ -5,13 +5,18 @@ import com.example.cuidandopatas.domain.entity.Pet;
 import com.example.cuidandopatas.domain.entity.User;
 import com.example.cuidandopatas.domain.repository.PetRepository;
 import com.example.cuidandopatas.domain.repository.UserRepository;
+import com.example.cuidandopatas.infrastructure.inbound.dto.request.FileUploadRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.request.PetRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.response.PetResponse;
 import com.example.cuidandopatas.infrastructure.inbound.mapper.PetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Base64;
 import java.util.List;
 import java.util.UUID;
 
@@ -40,9 +45,34 @@ public class PetUseCase implements PetServiceAdapter {
     public PetResponse save(PetRequest petRequest, UUID userId) {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+        try {
+            String imageName = saveImage(petRequest.getPicture());
+            petRequest.getPicture().setFileName(imageName);
+            Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
 
-        Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
+            return petMapper.entitytoResponse(created);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving the image.");
+        }
+    }
 
-        return petMapper.entitytoResponse(created);
+    private String saveImage(FileUploadRequest file) throws IOException{
+        byte[] decodedImage = Base64.getDecoder().decode(file.getFileContent());
+        String uploadDirectory = "/images/";
+        File directory = new File(uploadDirectory);
+        if (!directory.exists()) {
+            directory.mkdirs();
+        }
+        String filename = UUID.randomUUID() + ".jpg";
+        String filePath = uploadDirectory + filename;
+
+        try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
+            outputStream.write(decodedImage);
+            return filename;
+
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 }

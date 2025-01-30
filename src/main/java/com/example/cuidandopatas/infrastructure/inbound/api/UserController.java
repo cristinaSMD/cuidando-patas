@@ -6,7 +6,6 @@ import com.example.cuidandopatas.infrastructure.inbound.dto.request.UserRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.request.LoginRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.response.UserResponse;
 import com.example.cuidandopatas.infrastructure.inbound.mapper.UserMapper;
-import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import jakarta.servlet.http.HttpSession;
@@ -51,7 +50,6 @@ public class UserController {
     public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
         logger.info("Received login request with username: {}", loginRequest.getUsername());
         User user = userAccessServiceAdapter.shouldUserAccess(loginRequest.getUsername(), loginRequest.getPassword());
-        logger.info("User: {}", user);
 
         if (null != user) {
             session.setAttribute("username", user.getUsername());
@@ -62,6 +60,7 @@ public class UserController {
                     .header("Access-Control-Allow-Origin", "http://localhost:4200")
                     .build();
         } else {
+            logger.warn("Invalid username or password for username: {}", loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("<div class='alert alert-danger'>Invalid username or password</div>");
         }
     }

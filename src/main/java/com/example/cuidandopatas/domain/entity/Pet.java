@@ -44,6 +44,9 @@ public class Pet {
     @Column(name = "UPDATED_AT")
     private LocalDateTime updatedAt;
 
+    @Column(name = "IMAGE_URL", nullable = true)
+    private String imageFilename;
+
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
