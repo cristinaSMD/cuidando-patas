@@ -56,23 +56,22 @@ public class PetUseCase implements PetServiceAdapter {
         }
     }
 
-    private String saveImage(FileUploadRequest file) throws IOException{
+    private String saveImage(FileUploadRequest file) throws IOException {
         byte[] decodedImage = Base64.getDecoder().decode(file.getFileContent());
-        String uploadDirectory = "/images/";
+        String uploadDirectory = System.getProperty("user.dir") + File.separator + "images";
         File directory = new File(uploadDirectory);
-        if (!directory.exists()) {
-            directory.mkdirs();
+        if (!directory.exists() && !directory.mkdirs()) {
+            throw new IOException("No se pudo crear el directorio: " + uploadDirectory);
         }
         String filename = UUID.randomUUID() + ".jpg";
-        String filePath = uploadDirectory + filename;
+        String filePath = uploadDirectory + File.separator + filename;
 
         try (FileOutputStream outputStream = new FileOutputStream(filePath)) {
             outputStream.write(decodedImage);
             return filename;
-
         } catch (IOException e) {
-            throw new RuntimeException(e);
+            System.err.println("No se pudo guardar la imagen en " + filePath);
+            throw new RuntimeException("Error al guardar la imagen: " + e.getMessage(), e);
         }
-
     }
 }

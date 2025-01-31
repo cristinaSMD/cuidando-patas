@@ -5,7 +5,6 @@ import com.example.cuidandopatas.infrastructure.inbound.dto.request.PetRequest;
 import com.example.cuidandopatas.infrastructure.inbound.dto.response.PetResponse;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
-import jakarta.servlet.http.HttpSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -43,8 +42,8 @@ public class PetController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    @GetMapping("/get")
-    public ResponseEntity<List<PetResponse>> findPetsById(UUID userID) {
+    @GetMapping("{userID}/get")
+    public ResponseEntity<List<PetResponse>> findPetsById(@PathVariable("userID") UUID userID) {
 
         logger.info("Received find request with id: {}", userID);
         /*logger.info("Received find request with id: {}", session.getAttribute("usid"));
@@ -73,15 +72,15 @@ public class PetController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    @GetMapping("/create")
-    public ResponseEntity<PetResponse> createPet(@RequestBody PetRequest petRequest, HttpSession session) {
-        logger.info("Received create request with id: {}", session.getAttribute("usid"));
+    @PostMapping("{userID}/create")
+    public ResponseEntity<PetResponse> createPet(@PathVariable("userID") UUID userID, @RequestBody PetRequest petRequest) {
+        logger.info("Received create request with id: {}", userID);
 
-        if (StringUtils.isEmpty(session.getAttribute("usid").toString())) {
+        if (StringUtils.isEmpty(userID.toString())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-        PetResponse pet = petServiceAdapter.save(petRequest, UUID.fromString(session.getAttribute("usid").toString()));
+        PetResponse pet = petServiceAdapter.save(petRequest, UUID.fromString(userID.toString()));
 
 
         return ResponseEntity.status(HttpStatus.OK).body(pet);

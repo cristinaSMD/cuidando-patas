@@ -21,7 +21,7 @@ public class PetMapper {
         response.setType(pet.getType());
         response.setPetName(pet.getName());
         response.setOwnerName(pet.getUser().getUsername());
-        response.setId(pet.getId());
+        response.setUser(pet.getUser().getId());
         response.setDateBirth(pet.getDateBirth());
         response.setImageFilename(pet.getImageFilename());
 
