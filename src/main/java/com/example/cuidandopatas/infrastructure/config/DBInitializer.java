@@ -1,8 +1,10 @@
 package com.example.cuidandopatas.infrastructure.config;
 
+import com.example.cuidandopatas.domain.entity.Medicine;
 import com.example.cuidandopatas.domain.entity.Pet;
 import com.example.cuidandopatas.domain.entity.User;
 import com.example.cuidandopatas.domain.entity.Visit;
+import com.example.cuidandopatas.domain.repository.MedicineRepository;
 import com.example.cuidandopatas.domain.repository.PetRepository;
 import com.example.cuidandopatas.domain.repository.UserRepository;
 import com.example.cuidandopatas.domain.repository.VisitRepository;
@@ -19,12 +21,14 @@ public class DBInitializer {
     private final UserRepository userRepository;
     private final PetRepository petRepository;
     private final VisitRepository visitRepository;
+    private final MedicineRepository medicineRepository;
 
     @Autowired
-    public DBInitializer(UserRepository userRepository, PetRepository petRepository, VisitRepository visitRepository) {
+    public DBInitializer(UserRepository userRepository, PetRepository petRepository, VisitRepository visitRepository, MedicineRepository medicineRepository) {
         this.userRepository = userRepository;
         this.petRepository = petRepository;
         this.visitRepository = visitRepository;
+        this.medicineRepository = medicineRepository;
     }
 
     @PostConstruct
@@ -41,7 +45,6 @@ public class DBInitializer {
         user1.setPassword("PASSWORD");
         user1.setEmail("test@gmail.com");
         User johnDoe = userRepository.save(user1);
-        System.out.println("User created: " + johnDoe.getUsername() + " with id: " + johnDoe.getId());
         User user2 = new User();
         user2.setUsername("JaneSmith");
         user2.setPassword("PASSWORD");
@@ -67,9 +70,17 @@ public class DBInitializer {
         visit1.setFileURL("https://www.google.com/");
         visitRepository.save(visit1);
 
+        //Medicinas
+        Medicine med1 = new Medicine();
+        med1.setName("Medicina 1");
+        med1.setQuantity("50g cada 12 horas");
+        med1.setStartDate(LocalDate.now().minusDays(1));
+        med1.setEndDate(null);
+        med1.setPet(pet1);
+        medicineRepository.save(med1);
 
-
-
+        System.out.println("User created: " + johnDoe.getUsername() + " with id: " + johnDoe.getId());
+        System.out.println("Pet created: " + pet1.getName() + " with id: " + pet1.getId());
 
         System.out.println("Base de datos inicializada con datos de prueba");
     }

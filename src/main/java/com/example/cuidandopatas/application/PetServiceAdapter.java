@@ -11,6 +11,8 @@ public interface PetServiceAdapter {
 
     List<PetResponse> findAllByUserId(UUID userId);
 
+    Pet findById(UUID id);
+
     PetResponse save(PetRequest request, UUID userId);
 
 }

@@ -21,7 +21,7 @@ import java.util.List;
 import java.util.UUID;
 
 @Service
-public class PetUseCase implements PetServiceAdapter {
+public class PetServiceImpl implements PetServiceAdapter {
 
     @Autowired
     PetRepository petRepository;
@@ -35,11 +35,20 @@ public class PetUseCase implements PetServiceAdapter {
         List<PetResponse> petResponses = new ArrayList<>();
         List<Pet> pets = petRepository.findByUserId(userId);
 
-        for (Pet pet : pets ) {
+        for (Pet pet : pets) {
             petResponses.add(petMapper.entitytoResponse(pet));
         }
 
-        return petResponses;    }
+        return petResponses;
+    }
+
+    @Override
+    public Pet findById(UUID id) {
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("Pet not found with ID: " + id));
+
+        return pet;
+    }
 
     @Override
     public PetResponse save(PetRequest petRequest, UUID userId) {
