@@ -19,15 +19,30 @@ public class Medicine {
     @JoinColumn(name = "pet_id")
     private Pet pet;
 
-    @Column(name = "NAME")
+    @Column(name = "NAME", nullable = false)
     public String name;
 
-    @Column(name = "QUANTITY")
-    public String quantity;
+    @Column(name = "DOSE", nullable = false)
+    public String dose;
+
+    @Column(name = "FREQUENCY", nullable = false)
+    public String frequency;
+
+    @Column(name = "DETAIL")
+    public String detail;
+
+    @Column(name = "ACTIVE", columnDefinition = "BOOLEAN DEFAULT TRUE", nullable = false)
+    public boolean active;
 
     @Column(name = "START_DATE")
     public LocalDate startDate;
 
     @Column(name = "END_DATE")
     public LocalDate endDate;
+
+    @PrePersist
+    protected void onCreate() {
+        this.startDate = LocalDate.now();
+    }
+
 }

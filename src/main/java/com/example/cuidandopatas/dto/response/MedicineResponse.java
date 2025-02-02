@@ -10,9 +10,12 @@ import java.util.UUID;
 public class MedicineResponse {
     private UUID id;
     public String name;
-    public String quantity;
+    public String dose;
+    public String frequency;
+    public String detail;
+    public boolean active;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    public LocalDate startDate;
+    public LocalDate dateStart;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
-    public LocalDate endDate;
+    public LocalDate dateEnd;
 }

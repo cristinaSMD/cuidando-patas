@@ -11,6 +11,7 @@ import com.example.cuidandopatas.dto.response.PetResponse;
 import com.example.cuidandopatas.mapper.PetMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.webjars.NotFoundException;
 
 import java.io.File;
 import java.io.FileOutputStream;
@@ -45,7 +46,7 @@ public class PetServiceImpl implements PetServiceAdapter {
     @Override
     public Pet findById(UUID id) {
         Pet pet = petRepository.findById(id)
-                .orElseThrow(() -> new RuntimeException("Pet not found with ID: " + id));
+                .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
 
         return pet;
     }
@@ -53,7 +54,7 @@ public class PetServiceImpl implements PetServiceAdapter {
     @Override
     public PetResponse save(PetRequest petRequest, UUID userId) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() -> new RuntimeException("User not found with ID: " + userId));
+                .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
         try {
             String imageName = saveImage(petRequest.getPicture());
             petRequest.getPicture().setFileName(imageName);

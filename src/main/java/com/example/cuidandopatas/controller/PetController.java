@@ -115,9 +115,7 @@ public class PetController {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
 
-
         PetResponse pet = petServiceAdapter.save(petRequest, UUID.fromString(userID.toString()));
-
 
         return ResponseEntity.status(HttpStatus.OK).body(pet);
     }

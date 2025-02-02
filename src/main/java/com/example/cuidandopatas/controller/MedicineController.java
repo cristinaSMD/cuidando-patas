@@ -1,8 +1,12 @@
 package com.example.cuidandopatas.controller;
 
-import com.example.cuidandopatas.service.MedicineServiceAdapter;
+import com.example.cuidandopatas.controller.exception.InvalidInputException;
+import com.example.cuidandopatas.controller.exception.NotFoundException;
+import com.example.cuidandopatas.dto.request.MedicineRequest;
 import com.example.cuidandopatas.dto.response.MedicineResponse;
 import com.example.cuidandopatas.mapper.MedicineMapper;
+import com.example.cuidandopatas.service.MedicineServiceAdapter;
+import com.example.cuidandopatas.service.PetServiceAdapter;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import org.slf4j.Logger;
@@ -21,18 +25,14 @@ import java.util.UUID;
 @CrossOrigin(origins = "http://localhost:4200")
 public class MedicineController {
 
-
     private static final Logger logger = LoggerFactory.getLogger(MedicineController.class);
 
     @Autowired
-    private final MedicineServiceAdapter medicineServiceAdapter;
-
+    private MedicineServiceAdapter medicineServiceAdapter;
+    @Autowired
+    private PetServiceAdapter petServiceAdapter;
     @Autowired
     MedicineMapper medicineMapper;
-
-    public MedicineController(MedicineServiceAdapter medicineServiceAdapter) {
-        this.medicineServiceAdapter = medicineServiceAdapter;
-    }
 
     @Operation(
             summary = "Get pet's medicine",
@@ -46,7 +46,7 @@ public class MedicineController {
             }
     )
     @GetMapping("{petId}/medicine")
-    public ResponseEntity<List<MedicineResponse>> findMedicineByPetId(@PathVariable("petId") UUID petId) {
+    public ResponseEntity<List<MedicineResponse>> findMedicineByPetId(@PathVariable("petId") UUID petId) throws InvalidInputException, NotFoundException {
         List<MedicineResponse> pets = medicineServiceAdapter.findAllByPetId(petId);
 
         if (pets.isEmpty()) {
@@ -54,5 +54,28 @@ public class MedicineController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(pets);
+    }
+
+    @Operation(
+            summary = "Creates pet",
+            description = "Creates a pet for the user with the session opened.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Medicine successfully created"),
+                    @ApiResponse(responseCode = "403", description = "Invalid or expired session"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request input"),
+                    @ApiResponse(responseCode = "404", description = "None pet was found"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    @PostMapping("{petID}/medicine")
+    public ResponseEntity<MedicineResponse> createPet(@PathVariable("petID") UUID
+                                                              petID, @RequestBody MedicineRequest medRequest)
+            throws InvalidInputException, NotFoundException {
+        logger.info("Received create medicine request with pet id: {}", petID);
+
+        MedicineResponse medicine = medicineServiceAdapter.save(medRequest, petID);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(medicine);
     }
 }
