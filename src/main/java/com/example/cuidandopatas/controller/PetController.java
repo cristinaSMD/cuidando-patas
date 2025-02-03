@@ -42,7 +42,7 @@ public class PetController {
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
-    @GetMapping("{userID}/get")
+    @GetMapping("{userID}/find")
     public ResponseEntity<List<PetResponse>> findPetsById(@PathVariable("userID") UUID userID) {
 
         logger.info("Received find request with id: {}", userID);

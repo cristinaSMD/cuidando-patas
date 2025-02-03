@@ -58,7 +58,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                     //.header("HX-Redirect", "/userDiary")
                     .header("Access-Control-Allow-Origin", "http://localhost:4200")
-                    .build();
+                    .body(user.getId().toString());
         } else {
             logger.warn("Invalid username or password for username: {}", loginRequest.getUsername());
             return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("<div class='alert alert-danger'>Invalid username or password</div>");
