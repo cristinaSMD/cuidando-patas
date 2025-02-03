@@ -47,7 +47,6 @@ public class PetServiceImpl implements PetServiceAdapter {
     public Pet findById(UUID id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
-
         return pet;
     }
 
@@ -56,8 +55,11 @@ public class PetServiceImpl implements PetServiceAdapter {
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
         try {
-            String imageName = saveImage(petRequest.getPicture());
-            petRequest.getPicture().setFileName(imageName);
+            if(petRequest.getPicture() != null) {
+                String imageName = saveImage(petRequest.getPicture());
+                petRequest.getPicture().setFileName(imageName);
+            }
+
             Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
 
             return petMapper.entitytoResponse(created);
@@ -67,6 +69,7 @@ public class PetServiceImpl implements PetServiceAdapter {
     }
 
     private String saveImage(FileUploadRequest file) throws IOException {
+
         byte[] decodedImage = Base64.getDecoder().decode(file.getFileContent());
         String uploadDirectory = System.getProperty("user.dir") + File.separator + "images";
         File directory = new File(uploadDirectory);

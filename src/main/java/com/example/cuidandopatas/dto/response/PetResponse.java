@@ -14,7 +14,7 @@ public class PetResponse {
     private String petName;
     private String type;
     private String breed;
-    private Integer chip;
+    private String chip;
     private String ownerName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateBirth;

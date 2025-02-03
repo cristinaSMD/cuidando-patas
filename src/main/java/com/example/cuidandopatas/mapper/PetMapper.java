@@ -35,15 +35,15 @@ public class PetMapper {
     public Pet requestAndUserToEntity(PetRequest petRequest, User user) {
         Pet pet = new Pet();
 
-        pet.setChip(petRequest.getChip());
         pet.setBreed(petRequest.getBreed());
         pet.setType(petRequest.getType());
         pet.setName(petRequest.getPetName());
         pet.setUser(user);
         pet.setChip(petRequest.getChip());
         pet.setDateBirth(petRequest.getDateBirth());
-        pet.setImageFilename(petRequest.getPicture().getFileName());
-
+        if(petRequest.getPicture() != null) {
+            pet.setImageFilename(petRequest.getPicture().getFileName());
+        }
         return pet;
     }
 }

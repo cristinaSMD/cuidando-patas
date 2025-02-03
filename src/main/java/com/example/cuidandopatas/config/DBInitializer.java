@@ -57,7 +57,7 @@ public class DBInitializer {
         pet1.setBreed("Breed 1");
         pet1.setType("Type 1");
         pet1.setUser(user1);
-        pet1.setChip(12345);
+        pet1.setChip("12345");
         pet1.setDateBirth(LocalDate.now().minusYears(3));
         pet1.setImageFilename("c009d371-d19a-4ca8-9fd6-f3f6c1901568.jpg");
         petRepository.save(pet1);

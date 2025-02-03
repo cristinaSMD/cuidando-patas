@@ -14,6 +14,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -58,6 +59,7 @@ public class UserController {
             return ResponseEntity.status(HttpStatus.OK)
                     //.header("HX-Redirect", "/userDiary")
                     .header("Access-Control-Allow-Origin", "http://localhost:4200")
+                    .contentType(MediaType.TEXT_PLAIN)
                     .body(user.getId().toString());
         } else {
             logger.warn("Invalid username or password for username: {}", loginRequest.getUsername());
