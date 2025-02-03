@@ -12,7 +12,7 @@ import java.util.UUID;
 @Repository
 public interface PetRepository extends JpaRepository<Pet, UUID> {
 
-    @Query("SELECT l FROM Pet l JOIN l.user u WHERE u.id = :userId")
+    @Query("SELECT p FROM Pet p WHERE p.user.id = :userId and p.disableDate IS NULL")
     List<Pet> findByUserId(@Param("userId") UUID userId);
 
 }

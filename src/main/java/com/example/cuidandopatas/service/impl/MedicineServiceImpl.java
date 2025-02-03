@@ -1,4 +1,4 @@
-package com.example.cuidandopatas.service.usecase;
+package com.example.cuidandopatas.service.impl;
 
 import com.example.cuidandopatas.controller.exception.NotFoundException;
 import com.example.cuidandopatas.dto.request.MedicineRequest;
@@ -14,6 +14,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
@@ -22,7 +23,6 @@ import java.util.UUID;
 public class MedicineServiceImpl implements MedicineServiceAdapter {
 
     private static final Logger logger = LoggerFactory.getLogger(MedicineServiceImpl.class);
-
 
     @Autowired
     MedicineRepository medicineRepository;
@@ -42,13 +42,31 @@ public class MedicineServiceImpl implements MedicineServiceAdapter {
     public MedicineResponse save(MedicineRequest request, UUID petId) throws NotFoundException {
 
         Optional<Pet> pet = petRepository.findById(petId);
-        if(pet.isEmpty()) {
-            throw new NotFoundException("Not pet with id "+ petId+" was found.");
+        if (pet.isEmpty()) {
+            throw new NotFoundException("Not pet with id " + petId + " was found.");
         }
 
         Medicine medicine = medicineMapper.RequestAndPetIdtoEntity(request, pet.get());
+        if(LocalDate.now().isAfter(medicine.getStartDate()) && LocalDate.now().isBefore(medicine.getEndDate())){
+            medicine.setActive(true);
+        } else {
+            medicine.setActive(false);
+        }
         medicine = medicineRepository.save(medicine);
 
         return medicineMapper.entitytoResponse(medicine);
+    }
+
+    @Override
+    public MedicineResponse endMedicine(UUID id) throws NotFoundException {
+        Optional<Medicine> medicine = medicineRepository.findById(id);
+        Medicine savedMed = new Medicine();
+        if (medicine.isPresent()) {
+            medicine.get().setEndDate(LocalDate.now());
+            savedMed = medicineRepository.save(medicine.get());
+        } else {
+            throw new NotFoundException("Not medicine with id " + id + " was found.");
+        }
+        return medicineMapper.entitytoResponse(savedMed);
     }
 }

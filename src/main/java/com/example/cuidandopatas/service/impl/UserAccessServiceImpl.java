@@ -1,8 +1,9 @@
-package com.example.cuidandopatas.service.usecase;
+package com.example.cuidandopatas.service.impl;
 
-import com.example.cuidandopatas.service.UserAccessServiceAdapter;
+import com.example.cuidandopatas.controller.exception.UnauthorizedException;
 import com.example.cuidandopatas.entity.User;
 import com.example.cuidandopatas.repository.UserRepository;
+import com.example.cuidandopatas.service.UserAccessServiceAdapter;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -13,8 +14,9 @@ public class UserAccessServiceImpl implements UserAccessServiceAdapter {
     UserRepository userRepository;
 
     @Override
-    public User shouldUserAccess(String username, String password) {
-        return userRepository.findByUsernameAndPassword(username, password);
+    public User shouldUserAccess(String username, String password) throws UnauthorizedException {
+        return userRepository.findByUsernameAndPassword(username, password)
+                .orElseThrow(() -> new UnauthorizedException("Wrong username or password."));
     }
 
     @Override

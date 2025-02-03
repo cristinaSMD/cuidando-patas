@@ -1,4 +1,4 @@
-package com.example.cuidandopatas.service.usecase;
+package com.example.cuidandopatas.service.impl;
 
 import com.example.cuidandopatas.service.PetServiceAdapter;
 import com.example.cuidandopatas.entity.Pet;
@@ -16,6 +16,7 @@ import org.webjars.NotFoundException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
 import java.util.List;
@@ -66,6 +67,16 @@ public class PetServiceImpl implements PetServiceAdapter {
         } catch (IOException e) {
             throw new RuntimeException("Error saving the image.");
         }
+    }
+
+    @Override
+    public PetResponse disable(UUID id) {
+        Pet pet = petRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
+        pet.setDisableDate(LocalDate.now());
+        Pet created = petRepository.save(pet);
+        return petMapper.entitytoResponse(created);
+
     }
 
     private String saveImage(FileUploadRequest file) throws IOException {

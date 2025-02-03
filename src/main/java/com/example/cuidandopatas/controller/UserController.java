@@ -1,5 +1,6 @@
 package com.example.cuidandopatas.controller;
 
+import com.example.cuidandopatas.controller.exception.UnauthorizedException;
 import com.example.cuidandopatas.service.UserAccessServiceAdapter;
 import com.example.cuidandopatas.entity.User;
 import com.example.cuidandopatas.dto.request.UserRequest;
@@ -28,14 +29,13 @@ public class UserController {
     private static final Logger logger = LoggerFactory.getLogger(UserController.class);
 
     @Autowired
-    private final UserAccessServiceAdapter userAccessServiceAdapter;
+    private UserAccessServiceAdapter userAccessServiceAdapter;
 
     @Autowired
     UserMapper userMapper;
 
-    public UserController(UserAccessServiceAdapter userAccessServiceAdapter) {
-        this.userAccessServiceAdapter = userAccessServiceAdapter;
-    }
+    //@Autowired
+    //JwtService jwtService;
 
     @Operation(
             summary = "Authenticate a user",
@@ -48,23 +48,21 @@ public class UserController {
             }
     )
     @PostMapping("/loginProcess")
-    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) {
+    public ResponseEntity<String> login(@RequestBody LoginRequest loginRequest, HttpSession session) throws UnauthorizedException {
         logger.info("Received login request with username: {}", loginRequest.getUsername());
         User user = userAccessServiceAdapter.shouldUserAccess(loginRequest.getUsername(), loginRequest.getPassword());
 
-        if (null != user) {
-            session.setAttribute("username", user.getUsername());
-            session.setAttribute("usid", user.getId());
+
+        session.setAttribute("username", user.getUsername());
+        session.setAttribute("usid", user.getId());
 
             return ResponseEntity.status(HttpStatus.OK)
                     //.header("HX-Redirect", "/userDiary")
                     .header("Access-Control-Allow-Origin", "http://localhost:4200")
                     .contentType(MediaType.TEXT_PLAIN)
                     .body(user.getId().toString());
-        } else {
-            logger.warn("Invalid username or password for username: {}", loginRequest.getUsername());
-            return ResponseEntity.status(HttpStatus.UNAUTHORIZED).body("<div class='alert alert-danger'>Invalid username or password</div>");
-        }
+            //.body(jwtService.generateToken(user.getUsername()));
+
     }
 
     @Operation(

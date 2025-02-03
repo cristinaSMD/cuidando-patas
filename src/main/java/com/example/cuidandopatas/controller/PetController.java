@@ -84,7 +84,6 @@ public class PetController {
         }
         PetResponse pet = petServiceAdapter.save(petRequest, UUID.fromString(userID.toString()));
 
-
         return ResponseEntity.status(HttpStatus.OK).body(pet);
     }
 
@@ -102,14 +101,12 @@ public class PetController {
     @PutMapping("{userID}/update")
     public ResponseEntity<PetResponse> updatePet(@PathVariable("userID") UUID userID, @RequestBody PetRequest petRequest) {
 
-        logger.info("Received find request with id: {}", userID);
-        /*logger.info("Received find request with id: {}", session.getAttribute("usid"));
-        Comentado hasta que controlemos sesions bien
-        if (StringUtils.isEmpty(userID.toString())) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
-        }
-        */
-        logger.info("Received create request with id: {}", userID);
+        /*
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }*/
+        logger.info("Received update request with id: {}", userID);
 
         if (StringUtils.isEmpty(userID.toString())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
@@ -119,4 +116,35 @@ public class PetController {
 
         return ResponseEntity.status(HttpStatus.OK).body(pet);
     }
+
+    @Operation(
+            summary = "Update pet by ID",
+            description = "Validates the user's credentials and returns a success response if valid.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Pets successfully retrieved"),
+                    @ApiResponse(responseCode = "403", description = "Invalid or expired session"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request input"),
+                    @ApiResponse(responseCode = "404", description = "None pet was found for this user"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    @DeleteMapping("{petId}")
+    public ResponseEntity<PetResponse> deletePet(@PathVariable("petId") UUID petId) {
+
+        /*
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if(!authentication.isAuthenticated()) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
+        }*/
+        logger.info("Received delete request with id: {}", petId);
+
+        if (StringUtils.isEmpty(petId.toString())) {
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(null);
+        }
+
+        PetResponse pet = petServiceAdapter.disable(petId);
+
+        return ResponseEntity.status(HttpStatus.OK).body(pet);
+    }
+
 }

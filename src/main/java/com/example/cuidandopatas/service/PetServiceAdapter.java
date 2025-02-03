@@ -15,4 +15,5 @@ public interface PetServiceAdapter {
 
     PetResponse save(PetRequest request, UUID userId);
 
+    PetResponse disable(UUID id);
 }

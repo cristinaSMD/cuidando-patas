@@ -11,4 +11,6 @@ public interface MedicineServiceAdapter {
     List<MedicineResponse> findAllByPetId(UUID petId);
 
     MedicineResponse save(MedicineRequest request, UUID petId) throws NotFoundException;
+
+    MedicineResponse endMedicine(UUID id) throws NotFoundException;
 }

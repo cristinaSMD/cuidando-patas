@@ -83,7 +83,7 @@ public class DBInitializer {
         medicineRepository.save(med1);
 
         System.out.println("User created: " + johnDoe.getUsername() + " with id: " + johnDoe.getId());
-        System.out.println("Pet created: " + pet1.getName() + " with id: " + pet1.getId());
+        System.out.println("Pet created: " + pet1.getName() + " with id: " + pet1.getId() + " fecha muerte:"+ pet1.getDisableDate());
 
         System.out.println("Base de datos inicializada con datos de prueba");
     }

@@ -40,9 +40,4 @@ public class Medicine {
     @Column(name = "END_DATE")
     public LocalDate endDate;
 
-    @PrePersist
-    protected void onCreate() {
-        this.startDate = LocalDate.now();
-    }
-
 }
