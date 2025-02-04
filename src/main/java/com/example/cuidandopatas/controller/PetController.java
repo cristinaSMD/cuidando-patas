@@ -33,7 +33,7 @@ public class PetController {
 
     @Operation(
             summary = "Get user pets",
-            description = "Validates the user's credentials and returns a success response if valid.",
+            description = "Returns all pets from user.",
             responses = {
                     @ApiResponse(responseCode = "200", description = "Pets successfully retrieved"),
                     @ApiResponse(responseCode = "403", description = "Invalid or expired session"),
@@ -43,7 +43,7 @@ public class PetController {
             }
     )
     @GetMapping("{userID}/find")
-    public ResponseEntity<List<PetResponse>> findPetsById(@PathVariable("userID") UUID userID) {
+    public ResponseEntity<List<PetResponse>> findPetsByUserId(@PathVariable("userID") UUID userID) {
 
         logger.info("Received find request with id: {}", userID);
         /*logger.info("Received find request with id: {}", session.getAttribute("usid"));
@@ -59,6 +59,33 @@ public class PetController {
         }
 
         return ResponseEntity.status(HttpStatus.OK).body(pets);
+    }
+
+    @Operation(
+            summary = "Get pet by Id",
+            description = "Validates the user's credentials and returns a success response if valid.",
+            responses = {
+                    @ApiResponse(responseCode = "200", description = "Pets successfully retrieved"),
+                    @ApiResponse(responseCode = "403", description = "Invalid or expired session"),
+                    @ApiResponse(responseCode = "400", description = "Invalid request input"),
+                    @ApiResponse(responseCode = "404", description = "None pet was found for this user"),
+                    @ApiResponse(responseCode = "500", description = "Internal server error")
+            }
+    )
+    @GetMapping("{petId}/individual")
+    public ResponseEntity<PetResponse> findPetById(@PathVariable("petId") UUID petId) {
+
+        logger.info("Received findPetById request with id: {}", petId);
+        /*logger.info("Received find request with id: {}", session.getAttribute("usid"));
+        Comentado hasta que controlemos sesions bien
+        if (StringUtils.isEmpty(userID.toString())) {
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(Collections.emptyList());
+        }
+        */
+        PetResponse pet = petServiceAdapter.findById(petId);
+
+
+        return ResponseEntity.status(HttpStatus.OK).body(pet);
     }
 
     @Operation(

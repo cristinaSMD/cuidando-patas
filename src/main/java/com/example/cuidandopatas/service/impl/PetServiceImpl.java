@@ -45,10 +45,10 @@ public class PetServiceImpl implements PetServiceAdapter {
     }
 
     @Override
-    public Pet findById(UUID id) {
+    public PetResponse findById(UUID id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
-        return pet;
+        return petMapper.entitytoResponse(pet);
     }
 
     @Override
