@@ -12,7 +12,7 @@ public interface PetServiceAdapter {
 
   PetResponse findById(UUID id);
 
-  PetResponse save(PetRequest request, UUID userId);
+  PetResponse create(PetRequest request, UUID userId);
 
   PetResponse update(PetRequest request, UUID userId);
 
