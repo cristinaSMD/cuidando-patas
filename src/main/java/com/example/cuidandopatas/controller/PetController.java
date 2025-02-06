@@ -106,10 +106,11 @@ public class PetController {
         if (StringUtils.isEmpty(userID.toString())) {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
         }
+
         if(petRequest.getId() != null && petServiceAdapter.findById(petRequest.getId()) != null) {
             return ResponseEntity.status(HttpStatus.CONFLICT).body(null);
         }
-        PetResponse pet = petServiceAdapter.save(petRequest, UUID.fromString(userID.toString()));
+        PetResponse pet = petServiceAdapter.update(petRequest, UUID.fromString(userID.toString()));
 
         return ResponseEntity.status(HttpStatus.OK).body(pet);
     }

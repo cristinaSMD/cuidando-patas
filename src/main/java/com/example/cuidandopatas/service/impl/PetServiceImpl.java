@@ -16,6 +16,8 @@ import org.webjars.NotFoundException;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Base64;
@@ -70,6 +72,24 @@ public class PetServiceImpl implements PetServiceAdapter {
     }
 
     @Override
+    public PetResponse update(PetRequest petRequest, UUID userId) {
+        User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
+
+        try {
+            if(petRequest.getPicture() != null) {
+                String imageName = saveImage(petRequest.getPicture());
+                petRequest.getPicture().setFileName(imageName);
+            }
+
+            Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
+
+            return petMapper.entitytoResponse(created);
+        } catch (IOException e) {
+            throw new RuntimeException("Error saving the image.");
+        }
+    }
+
+    @Override
     public PetResponse disable(UUID id) {
         Pet pet = petRepository.findById(id)
                 .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
@@ -82,7 +102,9 @@ public class PetServiceImpl implements PetServiceAdapter {
     private String saveImage(FileUploadRequest file) throws IOException {
 
         byte[] decodedImage = Base64.getDecoder().decode(file.getFileContent());
-        String uploadDirectory = System.getProperty("user.dir") + File.separator + "images";
+      Path relativePath = Paths.get("../../images");
+
+      String uploadDirectory = relativePath.toString();//System.getProperty("user.dir") + File.separator + "images";
         File directory = new File(uploadDirectory);
         if (!directory.exists() && !directory.mkdirs()) {
             throw new IOException("No se pudo crear el directorio: " + uploadDirectory);

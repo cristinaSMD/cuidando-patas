@@ -8,11 +8,13 @@ import java.util.UUID;
 
 public interface PetServiceAdapter {
 
-    List<PetResponse> findAllByUserId(UUID userId);
+  List<PetResponse> findAllByUserId(UUID userId);
 
-    PetResponse findById(UUID id);
+  PetResponse findById(UUID id);
 
-    PetResponse save(PetRequest request, UUID userId);
+  PetResponse save(PetRequest request, UUID userId);
 
-    PetResponse disable(UUID id);
+  PetResponse update(PetRequest request, UUID userId);
+
+  PetResponse disable(UUID id);
 }
