@@ -22,51 +22,51 @@ import java.util.UUID;
 @Service
 public class MedicineServiceImpl implements MedicineServiceAdapter {
 
-    private static final Logger logger = LoggerFactory.getLogger(MedicineServiceImpl.class);
+  private static final Logger logger = LoggerFactory.getLogger(MedicineServiceImpl.class);
 
-    @Autowired
-    MedicineRepository medicineRepository;
-    @Autowired
-    MedicineMapper medicineMapper;
-    @Autowired
-    PetRepository petRepository;
+  @Autowired
+  MedicineRepository medicineRepository;
+  @Autowired
+  MedicineMapper medicineMapper;
+  @Autowired
+  PetRepository petRepository;
 
-    @Override
-    public List<MedicineResponse> findAllByPetId(UUID petId) {
-        List<Medicine> meds = medicineRepository.findAllByPetId(petId);
+  @Override
+  public List<MedicineResponse> findAllByPetId(UUID petId) {
+    List<Medicine> meds = medicineRepository.findAllByPetId(petId);
 
-        return medicineMapper.entityListToResponse(meds);
+    return medicineMapper.entityListToResponse(meds);
+  }
+
+  @Override
+  public MedicineResponse save(MedicineRequest request, UUID petId) throws NotFoundException {
+
+    Optional<Pet> pet = petRepository.findById(petId);
+    if (pet.isEmpty()) {
+      throw new NotFoundException("Not pet with id " + petId + " was found.");
     }
 
-    @Override
-    public MedicineResponse save(MedicineRequest request, UUID petId) throws NotFoundException {
+    Medicine medicine = medicineMapper.RequestAndPetIdtoEntity(request, pet.get());
 
-        Optional<Pet> pet = petRepository.findById(petId);
-        if (pet.isEmpty()) {
-            throw new NotFoundException("Not pet with id " + petId + " was found.");
-        }
-
-        Medicine medicine = medicineMapper.RequestAndPetIdtoEntity(request, pet.get());
-        if(LocalDate.now().isAfter(medicine.getStartDate()) && LocalDate.now().isBefore(medicine.getEndDate())){
-            medicine.setActive(true);
-        } else {
-            medicine.setActive(false);
-        }
-        medicine = medicineRepository.save(medicine);
-
-        return medicineMapper.entitytoResponse(medicine);
+    if ((medicine.getStartDate() != null && LocalDate.now().isAfter(medicine.getStartDate())) && //Si la fecha de inicio NO ES nula Y posterior a la fecha actual.
+      (medicine.getEndDate() == null || LocalDate.now().isBefore(medicine.getEndDate()))) { //Si la fecha de fin ES nula O si es anterior a la fecha actual.
+      medicine.setActive(true);
     }
+    medicine = medicineRepository.save(medicine);
 
-    @Override
-    public MedicineResponse endMedicine(UUID id) throws NotFoundException {
-        Optional<Medicine> medicine = medicineRepository.findById(id);
-        Medicine savedMed = new Medicine();
-        if (medicine.isPresent()) {
-            medicine.get().setEndDate(LocalDate.now());
-            savedMed = medicineRepository.save(medicine.get());
-        } else {
-            throw new NotFoundException("Not medicine with id " + id + " was found.");
-        }
-        return medicineMapper.entitytoResponse(savedMed);
+    return medicineMapper.entitytoResponse(medicine);
+  }
+
+  @Override
+  public MedicineResponse endMedicine(UUID id) throws NotFoundException {
+    Optional<Medicine> medicine = medicineRepository.findById(id);
+    Medicine savedMed = new Medicine();
+    if (medicine.isPresent()) {
+      medicine.get().setEndDate(LocalDate.now());
+      savedMed = medicineRepository.save(medicine.get());
+    } else {
+      throw new NotFoundException("Not medicine with id " + id + " was found.");
     }
+    return medicineMapper.entitytoResponse(savedMed);
+  }
 }
