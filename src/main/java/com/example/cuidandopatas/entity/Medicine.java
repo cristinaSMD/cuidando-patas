@@ -28,9 +28,6 @@ public class Medicine {
     @Column(name = "FREQUENCY", nullable = false)
     public String frequency;
 
-    @Column(name = "DETAIL")
-    public String detail;
-
     @Column(name = "ACTIVE", columnDefinition = "BOOLEAN DEFAULT TRUE", nullable = false)
     public boolean active;
 

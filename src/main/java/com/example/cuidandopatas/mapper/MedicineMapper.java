@@ -19,7 +19,6 @@ public class MedicineMapper {
         response.setDose(medicine.getDose());
         response.setFrequency(medicine.getFrequency());
         response.setName(medicine.getName());
-        response.setDetail(medicine.getDetail());
         response.setDateStart(medicine.getStartDate());
         response.setDateEnd(medicine.getEndDate());
         response.setActive(medicine.isActive());
@@ -37,7 +36,6 @@ public class MedicineMapper {
         medicine.setDose(request.getDose());
         medicine.setFrequency(request.getFrequency());
         medicine.setName(request.getName());
-        medicine.setDetail(request.getDetail());
         medicine.setStartDate(request.getDateStart());
         medicine.setEndDate(request.getDateEnd());
         medicine.setActive(request.isActive());

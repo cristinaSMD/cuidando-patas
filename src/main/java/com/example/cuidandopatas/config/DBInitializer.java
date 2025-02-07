@@ -71,17 +71,16 @@ public class DBInitializer {
             visit1.setFileURL("https://www.google.com/");
             visitRepository.save(visit1);
 
-            //Medicinas
-            Medicine med1 = new Medicine();
-            med1.setName("Medicina 1");
-            med1.setDose("50g");
-            med1.setFrequency("12 horas");
-            med1.setDetail("asdasdsa");
-            med1.setActive(true);
-            med1.setStartDate(LocalDate.now().minusDays(1));
-            med1.setEndDate(null);
-            med1.setPet(pet1);
-            medicineRepository.save(med1);
+        //Medicinas
+        Medicine med1 = new Medicine();
+        med1.setName("Medicina 1");
+        med1.setDose("50g");
+        med1.setFrequency("12 horas");
+        med1.setActive(true);
+        med1.setStartDate(LocalDate.now().minusDays(1));
+        med1.setEndDate(null);
+        med1.setPet(pet1);
+        medicineRepository.save(med1);
 
             System.out.println("User created: " + johnDoe.getUsername() + " with id: " + johnDoe.getId());
             System.out.println("Pet created: " + pet1.getName() + " with id: " + pet1.getId() + " fecha muerte:" + pet1.getDisableDate());
