@@ -35,7 +35,7 @@ public class Pet {
     @Column(name = "DATE_BIRTH", nullable = false)
     private LocalDate dateBirth;
 
-    @Column(name = "CHIP", nullable = true)
+    @Column(name = "CHIP", nullable = true, unique = true)
     private String chip;
 
     @Column(name = "CREATED_AT", nullable = false, updatable = false)

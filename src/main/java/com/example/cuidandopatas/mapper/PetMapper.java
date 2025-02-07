@@ -24,26 +24,28 @@ public class PetMapper {
         response.setOwnerName(pet.getUser().getUsername());
         response.setUser(pet.getUser().getId());
         response.setDateBirth(pet.getDateBirth());
-        response.setPhotoName(pet.getImageFilename());
+        response.setPhoto(pet.getImageFilename());
 
         return response;
     }
-
     public List<PetResponse> entityListToResponse(List<Pet> pets){
         return pets.stream().map(this::entitytoResponse).collect(Collectors.toList());
     }
 
     public Pet requestAndUserToEntity(PetRequest petRequest, User user) {
         Pet pet = new Pet();
-
+        if(petRequest.getId() != null && !StringUtils.isEmpty( petRequest.getId().toString())) {
+            pet.setId(petRequest.getId());
+        }
         pet.setBreed(petRequest.getBreed());
         pet.setType(petRequest.getType());
         pet.setName(petRequest.getPetName());
         pet.setUser(user);
         pet.setChip(petRequest.getChip());
         pet.setDateBirth(petRequest.getDateBirth());
-        pet.setImageFilename(petRequest.getPhotoName());
-
+        if(!StringUtils.isEmpty(petRequest.getPhotoName())) {
+            pet.setImageFilename(petRequest.getPhotoName());
+        }
         return pet;
     }
 }

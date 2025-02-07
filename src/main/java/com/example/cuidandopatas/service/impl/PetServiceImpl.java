@@ -81,18 +81,12 @@ public class PetServiceImpl implements PetServiceAdapter {
   public PetResponse update(PetRequest petRequest, UUID userId) {
     User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
 
-    try {
-      if (petRequest.getPhoto() != null) {
-        String imageName = saveImage(petRequest.getPhoto());
-        petRequest.setPhotoName(imageName);
-      }
+    Pet previousPet = petRepository.findById(petRequest.getId()).orElseThrow(() -> new NotFoundException("Pet not found with ID: " + petRequest.getId()));
 
-      Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
+    Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
 
-      return petMapper.entitytoResponse(created);
-    } catch (IOException e) {
-      throw new RuntimeException("Error saving the image.");
-    }
+    return petMapper.entitytoResponse(created);
+
   }
 
   @Override

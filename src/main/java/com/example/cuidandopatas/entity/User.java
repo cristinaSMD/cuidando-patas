@@ -2,11 +2,13 @@ package com.example.cuidandopatas.entity;
 
 import jakarta.persistence.*;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
 
 @Data
+@NoArgsConstructor
 @Entity
 @Table(name = "\"USER\"")
 public class User {
@@ -40,5 +42,6 @@ public class User {
     protected void onUpdate() {
         this.updatedAt = LocalDateTime.now();
     }
+
 
 }
