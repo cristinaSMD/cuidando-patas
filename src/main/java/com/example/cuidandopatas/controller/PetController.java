@@ -128,24 +128,19 @@ public class PetController {
     }
 
     @Operation(
-            summary = "Update pet by ID",
-            description = "Validates the user's credentials and returns a success response if valid.",
+            summary = "Delete pet by ID",
+            description = "Deletes the pet if exists.",
             responses = {
-                    @ApiResponse(responseCode = "200", description = "Pets successfully retrieved"),
+                    @ApiResponse(responseCode = "200", description = "Pet successfully deleted"),
                     @ApiResponse(responseCode = "403", description = "Invalid or expired session"),
                     @ApiResponse(responseCode = "400", description = "Invalid request input"),
-                    @ApiResponse(responseCode = "404", description = "None pet was found for this user"),
+                    @ApiResponse(responseCode = "404", description = "Pet wasn't found"),
                     @ApiResponse(responseCode = "500", description = "Internal server error")
             }
     )
     @DeleteMapping("{petId}")
     public ResponseEntity<PetResponse> deletePet(@PathVariable("petId") UUID petId) {
 
-        /*
-        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if(!authentication.isAuthenticated()) {
-            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(null);
-        }*/
         logger.info("Received delete request with id: {}", petId);
 
         if (StringUtils.isEmpty(petId.toString())) {

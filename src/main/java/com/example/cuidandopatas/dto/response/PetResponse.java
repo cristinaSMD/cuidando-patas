@@ -18,6 +18,6 @@ public class PetResponse {
     private String ownerName;
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
     private LocalDate dateBirth;
-    private String imageFilename;
+    private String photoName;
     private LocalDateTime updatedAt;
 }

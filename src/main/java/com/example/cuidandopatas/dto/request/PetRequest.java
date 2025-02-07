@@ -19,5 +19,7 @@ public class PetRequest {
     @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd") // Soporte para "2004-12-12"
     private LocalDate dateBirth;
     @Nullable
-    private FileUploadRequest picture;
+    private String photo;
+    @Nullable
+    private String photoName;
 }

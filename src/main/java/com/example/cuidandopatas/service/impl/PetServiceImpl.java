@@ -1,12 +1,10 @@
 package com.example.cuidandopatas.service.impl;
 
-import com.example.cuidandopatas.controller.PetController;
 import com.example.cuidandopatas.service.PetServiceAdapter;
 import com.example.cuidandopatas.entity.Pet;
 import com.example.cuidandopatas.entity.User;
 import com.example.cuidandopatas.repository.PetRepository;
 import com.example.cuidandopatas.repository.UserRepository;
-import com.example.cuidandopatas.dto.request.FileUploadRequest;
 import com.example.cuidandopatas.dto.request.PetRequest;
 import com.example.cuidandopatas.dto.response.PetResponse;
 import com.example.cuidandopatas.mapper.PetMapper;
@@ -14,6 +12,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.thymeleaf.util.StringUtils;
 import org.webjars.NotFoundException;
 
 import java.io.File;
@@ -44,6 +43,7 @@ public class PetServiceImpl implements PetServiceAdapter {
     List<Pet> pets = petRepository.findByUserId(userId);
 
     for (Pet pet : pets) {
+      LOGGER.info("Pet found: {}" , pet);
       petResponses.add(petMapper.entitytoResponse(pet));
     }
 
@@ -61,14 +61,16 @@ public class PetServiceImpl implements PetServiceAdapter {
   public PetResponse create(PetRequest petRequest, UUID userId) {
     User user = userRepository.findById(userId)
       .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
+    LOGGER.info("Creating pet {}", petRequest);
     try {
-      if (petRequest.getPicture() != null) {
-        String imageName = saveImage(petRequest.getPicture());
-        petRequest.getPicture().setFileName(imageName);
+      if (!StringUtils.isEmpty(petRequest.getPhoto())) {
+        String imageName = saveImage(petRequest.getPhoto());
+        petRequest.setPhotoName(imageName);
+        LOGGER.info("New pet image is: {}", petRequest.getPhotoName());
       }
 
       Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
-
+      LOGGER.info("Pet created: {}", created);
       return petMapper.entitytoResponse(created);
     } catch (IOException e) {
       throw new RuntimeException("Error saving the image.");
@@ -80,9 +82,9 @@ public class PetServiceImpl implements PetServiceAdapter {
     User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
 
     try {
-      if (petRequest.getPicture() != null) {
-        String imageName = saveImage(petRequest.getPicture());
-        petRequest.getPicture().setFileName(imageName);
+      if (petRequest.getPhoto() != null) {
+        String imageName = saveImage(petRequest.getPhoto());
+        petRequest.setPhotoName(imageName);
       }
 
       Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
@@ -103,10 +105,10 @@ public class PetServiceImpl implements PetServiceAdapter {
 
   }
 
-  private String saveImage(FileUploadRequest file) throws IOException {
+  private String saveImage(String decodedContent) throws IOException {
 
-    byte[] decodedImage = Base64.getDecoder().decode(file.getFileContent());
-    Path relativePath = Paths.get("../../images");
+    byte[] decodedImage = Base64.getDecoder().decode(decodedContent);
+    Path relativePath = Paths.get("../../visualProjects/cuidandoPatasFront/public/pets");
 
     String uploadDirectory = relativePath.toString();//System.getProperty("user.dir") + File.separator + "images";
     File directory = new File(uploadDirectory);

@@ -5,6 +5,7 @@ import com.example.cuidandopatas.entity.User;
 import com.example.cuidandopatas.dto.request.PetRequest;
 import com.example.cuidandopatas.dto.response.PetResponse;
 import org.springframework.stereotype.Component;
+import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -23,7 +24,7 @@ public class PetMapper {
         response.setOwnerName(pet.getUser().getUsername());
         response.setUser(pet.getUser().getId());
         response.setDateBirth(pet.getDateBirth());
-        response.setImageFilename(pet.getImageFilename());
+        response.setPhotoName(pet.getImageFilename());
 
         return response;
     }
@@ -41,9 +42,8 @@ public class PetMapper {
         pet.setUser(user);
         pet.setChip(petRequest.getChip());
         pet.setDateBirth(petRequest.getDateBirth());
-        if(petRequest.getPicture() != null) {
-            pet.setImageFilename(petRequest.getPicture().getFileName());
-        }
+        pet.setImageFilename(petRequest.getPhotoName());
+
         return pet;
     }
 }
