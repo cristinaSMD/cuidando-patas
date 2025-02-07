@@ -75,7 +75,6 @@ public class DBInitializer {
         med1.setName("Medicina 1");
         med1.setDose("50g");
         med1.setFrequency("12 horas");
-        med1.setDetail("asdasdsa");
         med1.setActive(true);
         med1.setStartDate(LocalDate.now().minusDays(1));
         med1.setEndDate(null);

@@ -16,7 +16,7 @@ public class PetResponse {
     private String breed;
     private String chip;
     private String ownerName;
-    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "dd/MM/yyyy")
+    @JsonFormat(shape = JsonFormat.Shape.STRING, pattern = "yyyy-MM-dd")
     private LocalDate dateBirth;
     private String photoName;
     private LocalDateTime updatedAt;
