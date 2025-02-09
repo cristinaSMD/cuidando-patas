@@ -33,7 +33,7 @@ public class MedicineServiceImpl implements MedicineServiceAdapter {
 
   @Override
   public List<MedicineResponse> findAllByPetId(UUID petId) {
-    List<Medicine> meds = medicineRepository.findAllByPetId(petId);
+    List<Medicine> meds = medicineRepository.findAllByPetId(petId.toString());
 
     return medicineMapper.entityListToResponse(meds);
   }
@@ -41,7 +41,7 @@ public class MedicineServiceImpl implements MedicineServiceAdapter {
   @Override
   public MedicineResponse save(MedicineRequest request, UUID petId) throws NotFoundException {
 
-    Optional<Pet> pet = petRepository.findById(petId);
+    Optional<Pet> pet = petRepository.findById(petId.toString());
     if (pet.isEmpty()) {
       throw new NotFoundException("Not pet with id " + petId + " was found.");
     }
@@ -59,7 +59,7 @@ public class MedicineServiceImpl implements MedicineServiceAdapter {
 
   @Override
   public MedicineResponse endMedicine(UUID id) throws NotFoundException {
-    Optional<Medicine> medicine = medicineRepository.findById(id);
+    Optional<Medicine> medicine = medicineRepository.findById(id.toString());
     Medicine savedMed = new Medicine();
     if (medicine.isPresent()) {
       medicine.get().setEndDate(LocalDate.now());

@@ -6,11 +6,10 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface MedicineRepository extends JpaRepository<Medicine, UUID> {
+public interface MedicineRepository extends JpaRepository<Medicine, String> {
 
     @Query("SELECT m FROM Medicine m WHERE m.pet.id =:petId")
-    List<Medicine> findAllByPetId(UUID petId);
+    List<Medicine> findAllByPetId(String petId);
 }

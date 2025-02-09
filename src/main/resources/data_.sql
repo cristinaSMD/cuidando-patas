@@ -1,36 +1,48 @@
--- Insertar datos en la tabla "LESSON"
-INSERT INTO "LESSON" (id, title, description, video, dance, created_at, updated_at)
-VALUES
-    ('7d9f4ea2-2c54-4abf-86c5-53e8cc123456', 'Jazz Basics', 'Introduction to basic jazz dance moves.', 'http://example.com/jazz_basics', 'DANCE1', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('2bbc6e23-94a5-4dc8-b7e6-18e456234567', 'Advanced Jazz', 'Learn advanced jazz steps and techniques.', 'http://example.com/advanced_jazz', 'DANCE2', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('9fadc013-be69-47cf-a2a1-2fc789456678', 'Jazz Fusion', 'Fusion techniques combining jazz with other styles.', 'http://example.com/jazz_fusion', 'DANCE3', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+-- Crear la tabla OWNER
+CREATE TABLE OWNER (
+    ID VARCHAR(36) NOT NULL PRIMARY KEY,
+    USERNAME VARCHAR(255) NOT NULL UNIQUE,
+    PASSWORD VARCHAR(255) NOT NULL,
+    EMAIL VARCHAR(255) NOT NULL,
+    CREATED_AT DATETIME NOT NULL,
+    UPDATED_AT DATETIME
+);
 
--- Insertar datos en la tabla "STEP"
-INSERT INTO "STEP" (id, created_at, updated_at, lesson_id, leader, follower)
-VALUES
-    ('8d9a4ea2-3c54-4ac5-86d5-53e8cd223456', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '7d9f4ea2-2c54-4abf-86c5-53e8cc123456', '["Alice", "Bob"]', '["Charlie", "Diana"]'),
-    ('9cbe6a23-94b5-5db8-c6e6-18e456654567', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '2bbc6e23-94a5-4dc8-b7e6-18e456234567', '["Eve"]', '["Frank"]'),
-    ('bcadc013-bf69-48cf-b2b1-2fc112958678', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP, '9fadc013-be69-47cf-a2a1-2fc789456678', '["George", "Helen"]', '["Isaac"]');
+-- Crear la tabla PET
+CREATE TABLE PET (
+    ID VARCHAR(36) NOT NULL PRIMARY KEY,
+    OWNER_ID VARCHAR(36),
+    NAME VARCHAR(255) NOT NULL,
+    TYPE VARCHAR(255) NOT NULL,
+    BREED VARCHAR(255),
+    DATE_BIRTH DATE NOT NULL,
+    CHIP VARCHAR(255) UNIQUE,
+    CREATED_AT DATETIME NOT NULL,
+    UPDATED_AT DATETIME,
+    IMAGE_URL VARCHAR(255),
+    DISABLE_DATE DATE,
+    FOREIGN KEY (OWNER_ID) REFERENCES OWNER(ID) ON DELETE CASCADE ON UPDATE CASCADE
+);
 
--- Insertar datos en la tabla intermedia "STEPS" para relacionar "LESSON" y "STEP"
-INSERT INTO "STEP_LESSON" (step_id, lesson_id)
-VALUES
-    ('8d9a4ea2-3c54-4ac5-86d5-53e8cd223456', '7d9f4ea2-2c54-4abf-86c5-53e8cc123456'), -- Warm-up pertenece a 'Jazz Basics'
-    ('9cbe6a23-94b5-5db8-c6e6-18e456654567', '7d9f4ea2-2c54-4abf-86c5-53e8cc123456'), -- Jazz Step 1 pertenece a 'Jazz Basics'
-    ('8d9a4ea2-3c54-4ac5-86d5-53e8cd223456', '2bbc6e23-94a5-4dc8-b7e6-18e456234567'), -- Jazz Step 2 pertenece a 'Advanced Jazz'
-    ('bcadc013-bf69-48cf-b2b1-2fc112958678', '9fadc013-be69-47cf-a2a1-2fc789456678'); -- Cool Down pertenece a 'Jazz Fusion'
+-- Crear la tabla MEDICINE
+CREATE TABLE MEDICINE (
+    ID VARCHAR(36) NOT NULL PRIMARY KEY,
+    PET_ID VARCHAR(36),
+    NAME VARCHAR(255) NOT NULL,
+    DOSE VARCHAR(255) NOT NULL,
+    FREQUENCY VARCHAR(255) NOT NULL,
+    ACTIVE BOOLEAN DEFAULT TRUE NOT NULL,
+    START_DATE DATE,
+    END_DATE DATE,
+    FOREIGN KEY (PET_ID) REFERENCES PET(ID) ON DELETE SET NULL ON UPDATE CASCADE
+);
 
--- Insertar datos en la tabla "USER"
-INSERT INTO "USER" (id, username, password, email, created_at, updated_at)
-VALUES
-    ('1a2b3c4d-5678-9ef0-1234-56789abcdef0', 'jazz_dancer_1', 'securepassword1', 'dancer1@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('2b3c4d5e-6789-0f12-3456-789abcdef012', 'jazz_dancer_2', 'securepassword2', 'dancer2@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
-    ('3c4d5e6f-7890-1f23-4567-89abcdef0123', 'jazz_dancer_3', 'securepassword3', 'dancer3@example.com', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
-
--- Insertar datos en la tabla intermedia "USER_LESSONS" para relacionar "LESSON" y "USER"
-INSERT INTO "USER_LESSONS" (user_id, lesson_id)
-VALUES
-    ('1a2b3c4d-5678-9ef0-1234-56789abcdef0', '7d9f4ea2-2c54-4abf-86c5-53e8cc123456'), -- Usuario 1 inscrito en la lección 1
-    ('2b3c4d5e-6789-0f12-3456-789abcdef012', '2bbc6e23-94a5-4dc8-b7e6-18e456234567'), -- Usuario 2 inscrito en la lección 2
-    ('3c4d5e6f-7890-1f23-4567-89abcdef0123', '9fadc013-be69-47cf-a2a1-2fc789456678'), -- Usuario 3 inscrito en la lección 3
-    ('1a2b3c4d-5678-9ef0-1234-56789abcdef0', '2bbc6e23-94a5-4dc8-b7e6-18e456234567'); -- Usuario 1 también inscrito en la lección 2
+-- Crear la tabla VISIT
+CREATE TABLE VISIT (
+    ID VARCHAR(36) NOT NULL PRIMARY KEY,
+    PET_ID VARCHAR(36),
+    DESCRIPTION TEXT,
+    DATE_VISIT DATE NOT NULL,
+    FILE VARCHAR(255),
+    FOREIGN KEY (PET_ID) REFERENCES PET(ID) ON DELETE CASCADE ON UPDATE CASCADE
+);

@@ -7,12 +7,10 @@ import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 
 import java.util.List;
-import java.util.UUID;
 
 @Repository
-public interface PetRepository extends JpaRepository<Pet, UUID> {
+public interface PetRepository extends JpaRepository<Pet, String> {
 
     @Query("SELECT p FROM Pet p WHERE p.user.id = :userId and p.disableDate IS NULL")
-    List<Pet> findByUserId(@Param("userId") UUID userId);
-
+    List<Pet> findByUserId(@Param("userId") String userId);
 }

@@ -8,6 +8,7 @@ import org.springframework.stereotype.Component;
 import org.thymeleaf.util.StringUtils;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -16,13 +17,13 @@ public class PetMapper {
     public PetResponse entitytoResponse(Pet pet) {
         PetResponse response = new PetResponse();
 
-        response.setId(pet.getId());
+        response.setId(UUID.fromString(pet.getId()));
         response.setChip(pet.getChip());
         response.setBreed(pet.getBreed());
         response.setType(pet.getType());
         response.setPetName(pet.getName());
         response.setOwnerName(pet.getUser().getUsername());
-        response.setUser(pet.getUser().getId());
+        response.setUser(UUID.fromString(pet.getUser().getId()));
         response.setDateBirth(pet.getDateBirth());
         response.setPhoto(pet.getImageFilename());
 
@@ -35,7 +36,7 @@ public class PetMapper {
     public Pet requestAndUserToEntity(PetRequest petRequest, User user) {
         Pet pet = new Pet();
         if(petRequest.getId() != null && !StringUtils.isEmpty( petRequest.getId().toString())) {
-            pet.setId(petRequest.getId());
+            pet.setId(petRequest.getId().toString());
         }
         pet.setBreed(petRequest.getBreed());
         pet.setType(petRequest.getType());

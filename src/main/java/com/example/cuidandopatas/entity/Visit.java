@@ -12,9 +12,8 @@ import java.util.UUID;
 public class Visit {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID", nullable = false)
-    private UUID id;
+    @Column(name = "ID", nullable = false, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinTable(name = "PET_ID",
@@ -31,4 +30,11 @@ public class Visit {
     @Column(name = "FILE", nullable = true)
     private String fileURL;
 
+    @PrePersist
+    public void generateId() {
+        if (id == null) {
+            UUID uuid = UUID.randomUUID();
+	        this.id = UUID.randomUUID().toString();
+        }
+    }
 }

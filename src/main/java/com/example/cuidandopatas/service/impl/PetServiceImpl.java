@@ -40,7 +40,7 @@ public class PetServiceImpl implements PetServiceAdapter {
   @Override
   public List<PetResponse> findAllByUserId(UUID userId) {
     List<PetResponse> petResponses = new ArrayList<>();
-    List<Pet> pets = petRepository.findByUserId(userId);
+    List<Pet> pets = petRepository.findByUserId(userId.toString());
 
     for (Pet pet : pets) {
       LOGGER.info("Pet found: {}" , pet);
@@ -52,14 +52,14 @@ public class PetServiceImpl implements PetServiceAdapter {
 
   @Override
   public PetResponse findById(UUID id) {
-    Pet pet = petRepository.findById(id)
+    Pet pet = petRepository.findById(id.toString())
       .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
     return petMapper.entitytoResponse(pet);
   }
 
   @Override
   public PetResponse create(PetRequest petRequest, UUID userId) {
-    User user = userRepository.findById(userId)
+    User user = userRepository.findById(userId.toString())
       .orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
     LOGGER.info("Creating pet {}", petRequest);
     try {
@@ -79,9 +79,9 @@ public class PetServiceImpl implements PetServiceAdapter {
 
   @Override
   public PetResponse update(PetRequest petRequest, UUID userId) {
-    User user = userRepository.findById(userId).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
+    User user = userRepository.findById(userId.toString()).orElseThrow(() -> new NotFoundException("User not found with ID: " + userId));
 
-    Pet previousPet = petRepository.findById(petRequest.getId()).orElseThrow(() -> new NotFoundException("Pet not found with ID: " + petRequest.getId()));
+    Pet previousPet = petRepository.findById(petRequest.getId().toString()).orElseThrow(() -> new NotFoundException("Pet not found with ID: " + petRequest.getId()));
 
     Pet created = petRepository.save(petMapper.requestAndUserToEntity(petRequest, user));
 
@@ -91,7 +91,7 @@ public class PetServiceImpl implements PetServiceAdapter {
 
   @Override
   public PetResponse disable(UUID id) {
-    Pet pet = petRepository.findById(id)
+    Pet pet = petRepository.findById(id.toString())
       .orElseThrow(() -> new NotFoundException("Pet not found with ID: " + id));
     pet.setDisableDate(LocalDate.now());
     Pet created = petRepository.save(pet);

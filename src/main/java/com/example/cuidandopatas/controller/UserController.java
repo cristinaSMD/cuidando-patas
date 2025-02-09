@@ -1,14 +1,14 @@
 package com.example.cuidandopatas.controller;
 
 import com.example.cuidandopatas.controller.exception.UnauthorizedException;
-import com.example.cuidandopatas.service.UserAccessServiceAdapter;
-import com.example.cuidandopatas.entity.User;
-import com.example.cuidandopatas.dto.request.UserRequest;
 import com.example.cuidandopatas.dto.request.LoginRequest;
+import com.example.cuidandopatas.dto.request.UserRequest;
 import com.example.cuidandopatas.dto.response.UserResponse;
+import com.example.cuidandopatas.entity.User;
 import com.example.cuidandopatas.mapper.UserMapper;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import com.example.cuidandopatas.service.UserAccessServiceAdapter;
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import jakarta.servlet.http.HttpSession;
 import jakarta.validation.Valid;
 import org.slf4j.Logger;
@@ -100,7 +100,7 @@ public class UserController {
             @RequestBody @Valid UserRequest updateRequest) {
 
         User user = userMapper.toDomain(updateRequest);
-        user.setId(id); // Asociamos el ID del usuario a actualizar
+        user.setId(id.toString()); // Asociamos el ID del usuario a actualizar
         User updatedUser = userAccessServiceAdapter.updateUser(user);
 
         return ResponseEntity.ok(userMapper.toResponse(updatedUser));

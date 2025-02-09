@@ -12,8 +12,8 @@ import java.util.UUID;
 public class Medicine {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    private UUID id;
+    @Column(name = "ID", nullable = false, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "pet_id")
@@ -36,5 +36,13 @@ public class Medicine {
 
     @Column(name = "END_DATE")
     public LocalDate endDate;
+
+    @PrePersist
+    public void generateId() {
+        if (id == null) {
+            UUID uuid = UUID.randomUUID();
+            this.id = UUID.randomUUID().toString();
+        }
+    }
 
 }

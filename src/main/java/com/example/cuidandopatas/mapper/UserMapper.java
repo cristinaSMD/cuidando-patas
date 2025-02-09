@@ -5,6 +5,8 @@ import com.example.cuidandopatas.dto.request.UserRequest;
 import com.example.cuidandopatas.dto.response.UserResponse;
 import org.springframework.stereotype.Component;
 
+import java.util.UUID;
+
 @Component
 public class UserMapper {
 
@@ -18,7 +20,7 @@ public class UserMapper {
 
     public UserResponse toResponse(User createdUser) {
         UserResponse response = new UserResponse();
-        response.setId(createdUser.getId());
+        response.setId(UUID.fromString(createdUser.getId()));
         response.setUsername(createdUser.getUsername());
         response.setEmail(createdUser.getEmail());
         response.setCreatedAt(createdUser.getCreatedAt());

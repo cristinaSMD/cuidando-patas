@@ -10,13 +10,12 @@ import java.util.UUID;
 @Data
 @NoArgsConstructor
 @Entity
-@Table(name = "\"USER\"")
+@Table(name = "\"OWNER\"")
 public class User {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID", nullable = false)
-    private UUID id;
+    @Column(name = "ID", nullable = false, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @Column(name="USERNAME", nullable = false, unique = true)
     private String username;
@@ -36,6 +35,10 @@ public class User {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (id == null) {
+            UUID uuid = UUID.randomUUID();
+            this.id = UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate

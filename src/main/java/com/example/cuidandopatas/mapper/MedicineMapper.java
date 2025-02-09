@@ -7,6 +7,7 @@ import com.example.cuidandopatas.entity.Pet;
 import org.springframework.stereotype.Component;
 
 import java.util.List;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
 @Component
@@ -15,7 +16,7 @@ public class MedicineMapper {
     public MedicineResponse entitytoResponse(Medicine medicine) {
         MedicineResponse response = new MedicineResponse();
 
-        response.setId(medicine.getId());
+        response.setId(UUID.fromString(medicine.getId()));
         response.setDose(medicine.getDose());
         response.setFrequency(medicine.getFrequency());
         response.setName(medicine.getName());
@@ -32,7 +33,9 @@ public class MedicineMapper {
 
     public Medicine RequestAndPetIdtoEntity(MedicineRequest request, Pet pet) {
         Medicine medicine = new Medicine();
-        medicine.setId(request.getId());
+        if(request.getId() != null && !request.getId().toString().isEmpty()) {
+            medicine.setId(request.getId().toString());
+        }
         medicine.setDose(request.getDose());
         medicine.setFrequency(request.getFrequency());
         medicine.setName(request.getName());

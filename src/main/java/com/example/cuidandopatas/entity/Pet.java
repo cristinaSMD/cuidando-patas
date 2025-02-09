@@ -13,13 +13,12 @@ import java.util.UUID;
 public class Pet {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.UUID)
-    @Column(name = "ID", nullable = false)
-    private UUID id;
+    @Column(name = "ID", nullable = false, columnDefinition = "VARCHAR(36)")
+    private String id;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinTable(name = "USER_ID",
-            joinColumns = @JoinColumn(name = "USER_ID"),
+    @JoinTable(name = "OWNER_ID",
+            joinColumns = @JoinColumn(name = "OWNER_ID"),
             inverseJoinColumns = @JoinColumn(name = "ID"))
     private User user;
 
@@ -53,6 +52,9 @@ public class Pet {
     @PrePersist
     protected void onCreate() {
         this.createdAt = LocalDateTime.now();
+        if (id == null) {
+            this.id = UUID.randomUUID().toString();
+        }
     }
 
     @PreUpdate
